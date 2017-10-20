@@ -22,8 +22,7 @@ class ExecuteCubeOperationsTest extends TestCase
             }
         }
 
-
-        $this->get(route('cube.store'))
+        $this->get('/make-cube/' . $n)
              ->assertJson($cube);
     }
 }
