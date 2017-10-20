@@ -9,8 +9,7 @@ class CubesController extends Controller
 {
     public function store($n)
     {
-        $cube = Cube::created(['n' => $n]);
-        $cube->generate();
+        $cube = Cube::create(['n' => $n]);
         return $cube->matrix;
     }
 }
