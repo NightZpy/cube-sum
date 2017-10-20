@@ -8,6 +8,11 @@ class Cube extends Model
 {
     protected $guarded = [];
 
+    public function games()
+    {
+        return $this->hasMany(Game::class);
+    }
+
     public function getMatrixAttribute()
     {
         return $this->generateMatrix();

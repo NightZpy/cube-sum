@@ -22,3 +22,33 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(App\Cube::class, function (Faker\Generator $faker) {
+    return [
+      'n' => $faker->numberBetween(3, 10)
+    ];
+});
+
+$factory->define(App\Game::class, function (Faker\Generator $faker) {
+    $type = $faker->randomElement(['QUERY', 'UPDATE']);
+    $cube = factory ('App\Cube')->create();
+    $n = $cube->n;
+    if ($type == 'UPDATE') {
+        $values = [];
+        for ($i=0; $i < 4; $i++) {
+            $values[] = $faker->unique()->numberBetween(0, $n);
+        }
+        $operation = join(' ', $values);
+    } else {
+        $values = [];
+        for ($i=0; $i < 6; $i++) {
+            $values[] = $faker->unique()->numberBetween(0, $n);
+        }
+        $operation = join(' ', $values);
+    }
+    return [
+        'type' => $type,
+        'operation' => $operation,
+        'cube_id' => $cube->id
+    ];
+});
