@@ -9,10 +9,14 @@ use Illuminate\Support\Facades\Session;
 
 class CubesController extends Controller
 {
-    public function store($n)
+    public function store(Request $request, $n)
     {
-        if ( Session::has('matrix'))
-            return Session::get('matrix');
+        $this->validate($request, [
+            'n' => 'required|digits_between: 1,100',
+        ]);
+
+        //if ( Session::has('matrix'))
+        //    return Session::get('matrix');
 
         $cube = Cube::create(['n' => $n]);
         $matrix = $cube->matrix;
@@ -20,8 +24,12 @@ class CubesController extends Controller
         return $matrix;
     }
 
-    public function updateCmd()
+    public function updateCmd(Request $request)
     {
+        $this->validate($request, [
+            'operation' => 'required|regex:((?:\d\s*){1,3})',
+            'cube_id' => 'required|exists:cubes,id'
+        ]);
         $operation = request()->get('operation');
         $cubeId = request()->get('cube_id');
         $game = Game::create(['type' => 'update', 'operation' => $operation, 'cube_id' => $cubeId]);
@@ -31,8 +39,12 @@ class CubesController extends Controller
         return $matrix;
     }
 
-    public function queryCmd()
+    public function queryCmd(Request $request)
     {
+        $this->validate($request, [
+            'operation' => 'required|regex:((?:\d\s*){1,3})',
+            'cube_id' => 'required|exists:cubes,id'
+        ]);
         $operation = request()->get('operation');
         $cubeId = request()->get('cube_id');
         $game = Game::create(['type' => 'query', 'operation' => $operation, 'cube_id' => $cubeId]);
