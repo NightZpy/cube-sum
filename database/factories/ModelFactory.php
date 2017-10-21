@@ -25,7 +25,7 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 
 $factory->define(App\Cube::class, function (Faker\Generator $faker) {
     return [
-      'n' => $faker->numberBetween(3, 10)
+      'n' => $faker->numberBetween(2, 4)
     ];
 });
 
