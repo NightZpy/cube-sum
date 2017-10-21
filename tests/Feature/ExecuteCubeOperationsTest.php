@@ -48,12 +48,15 @@ class ExecuteCubeOperationsTest extends TestCase
         $matrix = $cube->matrix;
         Session::put('matrix', $matrix);
 
-        $this->post('update', ['cube_id' => $cube->id, 'operation' => '0 1 1 10']);
-        $this->post('update', ['cube_id' => $cube->id, 'operation' => '1 1 1 8']);
-        $this->post('update', ['cube_id' => $cube->id, 'operation' => '2 1 1 6']);
-        $this->post('update', ['cube_id' => $cube->id, 'operation' => '3 1 1 5']);
+        $this->post('update', ['cube_id' => $cube->id, 'operation' => '2 2 2 4']);
+        $response = $this->post('query', ['cube_id'=> $cube->id, 'operation' => '1 1 1 3 3 3'])->json();
+        $this->assertEquals(4, intval($response['total']));
 
-        $response = $this->post('query', ['cube_id'=> $cube->id, 'operation' => '0 0 1 3 2 2'])->json();
-        $this->assertEquals(29, intval(array_column($response, 'total')));
+        $this->post('update', ['cube_id' => $cube->id, 'operation' => '1 1 1 23']);
+        $response = $this->post('query', ['cube_id'=> $cube->id, 'operation' => '2 2 2 4 4 4'])->json();
+        $this->assertEquals(4, intval($response['total']));
+
+        $response = $this->post('query', ['cube_id'=> $cube->id, 'operation' => '1 1 1 3 3 3'])->json();
+        $this->assertEquals(27, intval($response['total']));
     }
 }
