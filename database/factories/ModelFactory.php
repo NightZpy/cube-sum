@@ -36,13 +36,13 @@ $factory->define(App\Game::class, function (Faker\Generator $faker) {
     if ($type == 'UPDATE') {
         $values = [];
         for ($i=0; $i < 4; $i++) {
-            $values[] = $faker->unique()->numberBetween(0, $n);
+            $values[] = $faker->numberBetween(0, $n);
         }
         $operation = join(' ', $values);
     } else {
         $values = [];
         for ($i=0; $i < 6; $i++) {
-            $values[] = $faker->unique()->numberBetween(0, $n);
+            $values[] = $faker->numberBetween(0, $n);
         }
         $operation = join(' ', $values);
     }

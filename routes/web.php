@@ -12,9 +12,9 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('form');
 });
 
-Route::get('/make-cube/{n}', 'CubesController@store');
+Route::post('/make-cube', 'CubesController@store')->name('cube.store');
 Route::post('/update', 'CubesController@updateCmd');
 Route::post('/query', 'CubesController@queryCmd');

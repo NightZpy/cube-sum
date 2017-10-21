@@ -14,7 +14,7 @@ class ExecuteCubeOperationsTest extends TestCase
     {
         $n = 4;
         $cube = generateCube($n);
-        $this->get('/make-cube/' . $n)
+        $this->post('/make-cube', ['n' => $n])
              ->assertJson($cube);
     }
 
@@ -25,19 +25,19 @@ class ExecuteCubeOperationsTest extends TestCase
         Session::put('matrix', $matrix);
 
         $matrix[0][1][1] = 10;
-        $this->post('update', ['cube_id' => $cube->id, 'operation' => '0 1 1 10'])
+        $this->post('update', ['cube_id' => $cube->id, 'operation' => '1 2 2 10'])
              ->assertJson($matrix);
 
         $matrix[1][1][1] = 8;
-        $this->post('update', ['cube_id' => $cube->id, 'operation' => '1 1 1 8'])
+        $this->post('update', ['cube_id' => $cube->id, 'operation' => '2 2 2 8'])
              ->assertJson($matrix);
 
         $matrix[2][1][1] = 6;
-        $this->post('update', ['cube_id' => $cube->id, 'operation' => '2 1 1 6'])
+        $this->post('update', ['cube_id' => $cube->id, 'operation' => '3 2 2 6'])
              ->assertJson($matrix);
 
         $matrix[3][1][1] = 5;
-        $this->post('update', ['cube_id' => $cube->id, 'operation' => '3 1 1 5'])
+        $this->post('update', ['cube_id' => $cube->id, 'operation' => '4 2 2 5'])
              ->assertJson($matrix);
 
     }

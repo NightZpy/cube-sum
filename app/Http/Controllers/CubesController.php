@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Session;
 
 class CubesController extends Controller
 {
-    public function store(Request $request, $n)
+    public function store(Request $request)
     {
         $this->validate($request, [
             'n' => 'required|digits_between: 1,100',
@@ -18,7 +18,7 @@ class CubesController extends Controller
         //if ( Session::has('matrix'))
         //    return Session::get('matrix');
 
-        $cube = Cube::create(['n' => $n]);
+        $cube = Cube::create(['n' => $request->get('n')]);
         $matrix = $cube->matrix;
         Session::put('matrix', $matrix);
         return $matrix;
