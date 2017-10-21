@@ -51,7 +51,7 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
-                    <li><a href="#">New cube</a></li>
+                    {{--<li><a href="#" @click>New cube</a></li>--}}
                 </ul>
             </div>
         </div>

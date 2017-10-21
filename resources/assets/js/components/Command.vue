@@ -1,6 +1,11 @@
 <template xmlns="http://www.w3.org/1999/html">
     <div v-if="isValidCube">
         <div class="row">
+            <div class="form-group">
+                <button class="btn btn-primary" @click="newCube">New cube</button>
+            </div>
+        </div>
+        <div class="row">
             <div class="panel panel-default">
                 <div class="panel-heading text-center"><h1>Commands</h1></div>
             </div>
@@ -21,7 +26,7 @@
                 <ul>
                     <li v-for="q in querys">
                         <h3>
-                            {{ q.type }} | {{ q.operation }} | <span v-if="q.total">Total: <em>{{ q.total }}</em></span>
+                            {{ q.type }} | {{ q.operation }} | <span v-if="q.total != null">Total: <em>{{ q.total }}</em></span>
                         </h3>
                     </li>
                 </ul>
@@ -43,10 +48,16 @@
         },
         mounted() {
           this.$bus.$on('cubeCreated', (info) => {
-            this.isValidCube = true;
+            this.isValidCube = info;
+
+            if (!info)
+              this.querys = [];
           })
         },
         methods: {
+          newCube () {
+            this.$bus.$emit('newCube', true);
+          },
           sendCommand () {
 
             this.isInvalid = false;

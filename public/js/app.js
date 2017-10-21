@@ -43073,6 +43073,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -43088,11 +43093,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     var _this = this;
 
     this.$bus.$on('cubeCreated', function (info) {
-      _this.isValidCube = true;
+      _this.isValidCube = info;
+
+      if (!info) _this.querys = [];
     });
   },
 
   methods: {
+    newCube: function newCube() {
+      this.$bus.$emit('newCube', true);
+    },
     sendCommand: function sendCommand() {
       var _this2 = this;
 
@@ -43172,6 +43182,16 @@ var render = function() {
   return _vm.isValidCube
     ? _c("div", [
         _c("div", { staticClass: "row" }, [
+          _c("div", { staticClass: "form-group" }, [
+            _c(
+              "button",
+              { staticClass: "btn btn-primary", on: { click: _vm.newCube } },
+              [_vm._v("New cube")]
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "row" }, [
           _vm._m(0),
           _vm._v(" "),
           _c("div", { staticClass: "panel panel-body" }, [
@@ -43233,7 +43253,7 @@ var render = function() {
                             _vm._s(q.operation) +
                             " | "
                         ),
-                        q.total
+                        q.total != null
                           ? _c("span", [
                               _vm._v("Total: "),
                               _c("em", [_vm._v(_vm._s(q.total))])
@@ -43408,22 +43428,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       createValidCube: false
     };
   },
+  mounted: function mounted() {
+    var _this = this;
+
+    this.$bus.$on('newCube', function () {
+      _this.createValidCube = false;
+      _this.$bus.$emit('cubeCreated', false);
+    });
+  },
 
   methods: {
     makeCube: function makeCube() {
-      var _this = this;
+      var _this2 = this;
 
       if (this.nSize > 1) {
         axios.post('make-cube', { n: this.nSize }).then(function (response) {
           if (response.data.success) {
-            _this.createValidCube = _this.isValidCube = true;
-            _this.$bus.$emit('cubeCreated', true);
+            _this2.createValidCube = _this2.isValidCube = true;
+            _this2.$bus.$emit('cubeCreated', true);
           } else {
-            _this.isValidCube = false;
+            _this2.isValidCube = false;
           }
         }).catch(function (e) {
-          _this.isValidCube = false;
-          _this.errors.push(e);
+          _this2.isValidCube = false;
+          _this2.errors.push(e);
         });
       }
     }

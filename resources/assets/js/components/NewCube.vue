@@ -28,6 +28,12 @@
         createValidCube: false
       }
     },
+    mounted () {
+      this.$bus.$on('newCube', () => {
+        this.createValidCube = false;
+        this.$bus.$emit('cubeCreated', false);
+      });
+    },
     methods: {
       makeCube () {
         if ( this.nSize > 1 ) {
