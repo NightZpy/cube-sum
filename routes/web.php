@@ -17,3 +17,4 @@ Route::get('/', function () {
 
 Route::get('/make-cube/{n}', 'CubesController@store');
 Route::post('/update', 'CubesController@updateCmd');
+Route::post('/query', 'CubesController@queryCmd');

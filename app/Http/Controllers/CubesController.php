@@ -30,4 +30,13 @@ class CubesController extends Controller
         Session::put('matrix', $matrix);
         return $matrix;
     }
+
+    public function queryCmd()
+    {
+        $operation = request()->get('operation');
+        $cubeId = request()->get('cube_id');
+        $game = Game::create(['type' => 'query', 'operation' => $operation, 'cube_id' => $cubeId]);
+        $matrix = Session::get('matrix');
+        return ['total' => $game->queryMatrix($matrix)];
+    }
 }

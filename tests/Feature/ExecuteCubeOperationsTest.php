@@ -41,4 +41,19 @@ class ExecuteCubeOperationsTest extends TestCase
              ->assertJson($matrix);
 
     }
+
+    public function test_a_user_can_query_to_the_cube()
+    {
+        $cube = create('App\Cube', ['n' => 4]);
+        $matrix = $cube->matrix;
+        Session::put('matrix', $matrix);
+
+        $this->post('update', ['cube_id' => $cube->id, 'operation' => '0 1 1 10']);
+        $this->post('update', ['cube_id' => $cube->id, 'operation' => '1 1 1 8']);
+        $this->post('update', ['cube_id' => $cube->id, 'operation' => '2 1 1 6']);
+        $this->post('update', ['cube_id' => $cube->id, 'operation' => '3 1 1 5']);
+
+        $response = $this->post('query', ['cube_id'=> $cube->id, 'operation' => '0 0 1 3 2 2'])->json();
+        $this->assertEquals(29, intval(array_column($response, 'total')));
+    }
 }
