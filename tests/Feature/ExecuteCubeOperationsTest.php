@@ -14,8 +14,8 @@ class ExecuteCubeOperationsTest extends TestCase
     {
         $n = 4;
         $cube = generateCube($n);
-        $this->post('/make-cube', ['n' => $n])
-             ->assertJson($cube);
+        $response = $this->post('/make-cube', ['n' => $n])->json();
+             $this->assertEquals($cube, $response['matrix']);
     }
 
     public function test_a_user_can_update_the_cube()

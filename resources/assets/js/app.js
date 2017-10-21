@@ -6,8 +6,11 @@
  */
 
 require('./bootstrap');
+import EventBus from './event-bus'
 
 window.Vue = require('vue');
+
+Vue.use(EventBus);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -16,6 +19,7 @@ window.Vue = require('vue');
  */
 
 Vue.component('command', require('./components/Command.vue'));
+Vue.component('newcube', require('./components/NewCube.vue'));
 
 const app = new Vue({
     el: '#app'

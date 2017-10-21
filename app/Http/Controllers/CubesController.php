@@ -21,13 +21,13 @@ class CubesController extends Controller
         $cube = Cube::create(['n' => $request->get('n')]);
         $matrix = $cube->matrix;
         Session::put('matrix', $matrix);
-        return $matrix;
+        return ['matrix' => $matrix, 'success' => true];
     }
 
     public function updateCmd(Request $request)
     {
         $this->validate($request, [
-            'operation' => 'required|regex:((?:\d\s*){1,3})',
+            'operation' => 'required|regex:/^\d( ?\d){3}$/',
             'cube_id' => 'required|exists:cubes,id'
         ]);
         $operation = request()->get('operation');
@@ -42,7 +42,7 @@ class CubesController extends Controller
     public function queryCmd(Request $request)
     {
         $this->validate($request, [
-            'operation' => 'required|regex:((?:\d\s*){1,3})',
+            'operation' => 'required|regex:/^\d( ?\d){5}$/',
             'cube_id' => 'required|exists:cubes,id'
         ]);
         $operation = request()->get('operation');

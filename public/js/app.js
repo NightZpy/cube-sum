@@ -1077,8 +1077,11 @@ module.exports = __webpack_require__(50);
 
 /***/ }),
 /* 11 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__event_bus__ = __webpack_require__(72);
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -1088,7 +1091,10 @@ module.exports = __webpack_require__(50);
 
 __webpack_require__(12);
 
+
 window.Vue = __webpack_require__(36);
+
+Vue.use(__WEBPACK_IMPORTED_MODULE_0__event_bus__["a" /* default */]);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -1097,6 +1103,7 @@ window.Vue = __webpack_require__(36);
  */
 
 Vue.component('command', __webpack_require__(59));
+Vue.component('newcube', __webpack_require__(67));
 
 var app = new Vue({
   el: '#app'
@@ -43059,6 +43066,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -43066,26 +43078,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       type: '',
       operation: '',
       isInvalid: false,
-      querys: []
+      querys: [],
+      isValidCube: false
     };
   },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    var _this = this;
+
+    this.$bus.$on('cubeCreated', function (info) {
+      _this.isValidCube = true;
+    });
   },
 
   methods: {
     sendCommand: function sendCommand() {
-      var _this = this;
+      var _this2 = this;
 
       this.isInvalid = false;
-      if (this.type == 'query') if (!/^\d( ?\d){5}$/.test(this.operation)) this.isInvalid = true;else if (!/^\d( ?\d){3}$/.test(this.operation)) this.isInvalid = true;
+      if (this.type === 'query') if (!/^\d( ?\d){5}$/.test(this.operation)) this.isInvalid = true;else if (!/^\d( ?\d){3}$/.test(this.operation)) this.isInvalid = true;
 
       if (!this.isInvalid) {
         var data = { cube_id: 1, operation: this.operation };
         axios.post(this.type, data).then(function (response) {
           console.log(response.data);
+          var query = { operation: _this2.operation };
+          if (_this2.type === 'query') query[total] = response.data.total;
+          _this2.querys.push(query);
         }).catch(function (e) {
-          _this.errors.push(e);
+          _this2.errors.push(e);
         });
       }
     }
@@ -43143,102 +43163,124 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("div", { staticClass: "input-group" }, [
-      _c("span", { staticClass: "input-group-addon" }, [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.type,
-              expression: "type"
-            }
-          ],
-          attrs: { type: "radio", name: "type", value: "update", selected: "" },
-          domProps: { checked: _vm._q(_vm.type, "update") },
-          on: {
-            change: function($event) {
-              _vm.type = "update"
-            }
-          }
-        }),
-        _vm._v(" UPDATE\n            "),
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.type,
-              expression: "type"
-            }
-          ],
-          attrs: { type: "radio", name: "type", value: "query" },
-          domProps: { checked: _vm._q(_vm.type, "query") },
-          on: {
-            change: function($event) {
-              _vm.type = "query"
-            }
-          }
-        }),
-        _vm._v(" QUERY\n        ")
-      ]),
-      _vm._v(" "),
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.operation,
-            expression: "operation"
-          }
-        ],
-        staticClass: "form-control",
-        class: { error: _vm.isInvalid },
-        attrs: {
-          type: "text",
-          id: "operation",
-          name: "operation",
-          placeholder: "INSERT OPERATION HERE. Press [Enter] for send!"
-        },
-        domProps: { value: _vm.operation },
-        on: {
-          keyup: function($event) {
-            if (
-              !("button" in $event) &&
-              _vm._k($event.keyCode, "enter", 13, $event.key)
-            ) {
-              return null
-            }
-            _vm.sendCommand($event)
-          },
-          input: function($event) {
-            if ($event.target.composing) {
-              return
-            }
-            _vm.operation = $event.target.value
-          }
-        }
-      })
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-md-offset-1 col-md-10" }, [
-        _c(
-          "ul",
-          _vm._l(_vm.query, function(querys) {
-            return _c("li", [
-              _c("em", [_vm._v(_vm._s(_vm.query.operation) + ": ")]),
-              _vm._v(" "),
-              _c("strong", [_vm._v(_vm._s(_vm.query.total))])
+  return _vm.isValidCube
+    ? _c("div", [
+        _vm._m(0),
+        _vm._v(" "),
+        _c("div", { staticClass: "panel panel-body" }, [
+          _c("div", { staticClass: "input-group" }, [
+            _c("span", { staticClass: "input-group-addon" }, [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.type,
+                    expression: "type"
+                  }
+                ],
+                attrs: {
+                  type: "radio",
+                  name: "type",
+                  value: "update",
+                  selected: ""
+                },
+                domProps: { checked: _vm._q(_vm.type, "update") },
+                on: {
+                  change: function($event) {
+                    _vm.type = "update"
+                  }
+                }
+              }),
+              _vm._v(" UPDATE\n                "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.type,
+                    expression: "type"
+                  }
+                ],
+                attrs: { type: "radio", name: "type", value: "query" },
+                domProps: { checked: _vm._q(_vm.type, "query") },
+                on: {
+                  change: function($event) {
+                    _vm.type = "query"
+                  }
+                }
+              }),
+              _vm._v(" QUERY\n            ")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.operation,
+                  expression: "operation"
+                }
+              ],
+              staticClass: "form-control",
+              class: { error: _vm.isInvalid },
+              attrs: {
+                type: "text",
+                id: "operation",
+                name: "operation",
+                placeholder: "INSERT OPERATION HERE. Press [Enter] for send!"
+              },
+              domProps: { value: _vm.operation },
+              on: {
+                keyup: function($event) {
+                  if (
+                    !("button" in $event) &&
+                    _vm._k($event.keyCode, "enter", 13, $event.key)
+                  ) {
+                    return null
+                  }
+                  _vm.sendCommand($event)
+                },
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.operation = $event.target.value
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "row" }, [
+            _c("div", { staticClass: "col-md-offset-1 col-md-10" }, [
+              _c(
+                "ul",
+                _vm._l(_vm.query, function(querys) {
+                  return _c("li", [
+                    _c("em", [_vm._v(_vm._s(_vm.query.operation) + ": ")]),
+                    _vm._v(" "),
+                    _c("strong", [_vm._v(_vm._s(_vm.query.total))])
+                  ])
+                })
+              )
             ])
-          })
-        )
+          ])
+        ])
+      ])
+    : _vm._e()
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "panel panel-default" }, [
+      _c("div", { staticClass: "panel-heading text-center" }, [
+        _c("h1", [_vm._v("Commands")])
       ])
     ])
-  ])
-}
-var staticRenderFns = []
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -43247,6 +43289,241 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-5bdac094", module.exports)
   }
 }
+
+/***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(68)
+}
+var normalizeComponent = __webpack_require__(9)
+/* script */
+var __vue_script__ = __webpack_require__(70)
+/* template */
+var __vue_template__ = __webpack_require__(71)
+/* template functional */
+  var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-041b8e3e"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources\\assets\\js\\components\\NewCube.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-041b8e3e", Component.options)
+  } else {
+    hotAPI.reload("data-v-041b8e3e", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(69);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(46)("1ef25362", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-041b8e3e\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./NewCube.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-041b8e3e\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0&bustCache!./NewCube.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(45)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\ninput[type=\"number\"][data-v-041b8e3e]\n{\n    font-size:24px;\n    font-weight: bold;\n}\n.error[data-v-041b8e3e] {\n    border: red solid 2px;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 70 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: 'newcube',
+  data: function data() {
+    return {
+      nSize: 0,
+      isValidCube: true,
+      createValidCube: false
+    };
+  },
+
+  methods: {
+    makeCube: function makeCube() {
+      var _this = this;
+
+      if (this.nSize > 1) {
+        axios.post('make-cube', { n: this.nSize }).then(function (response) {
+          if (response.data.success) {
+            _this.createValidCube = _this.isValidCube = true;
+            _this.$bus.$emit('cubeCreated', true);
+          } else {
+            _this.isValidCube = false;
+          }
+        }).catch(function (e) {
+          _this.isValidCube = false;
+          _this.errors.push(e);
+        });
+      }
+    }
+  }
+});
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return !_vm.createValidCube
+    ? _c("div", [
+        _vm._m(0),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.nSize,
+                expression: "nSize"
+              }
+            ],
+            staticClass: "form-control",
+            class: { error: !_vm.isValidCube },
+            attrs: {
+              type: "number",
+              id: "operation",
+              name: "operation",
+              placeholder: "N Dimention for the cube"
+            },
+            domProps: { value: _vm.nSize },
+            on: {
+              keyup: function($event) {
+                if (
+                  !("button" in $event) &&
+                  _vm._k($event.keyCode, "enter", 13, $event.key)
+                ) {
+                  return null
+                }
+                _vm.makeCube($event)
+              },
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.nSize = $event.target.value
+              }
+            }
+          })
+        ])
+      ])
+    : _vm._e()
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "panel panel-default" }, [
+      _c("div", { staticClass: "panel-heading text-center" }, [
+        _c("h1", [_vm._v("Generate new Matrix Cube")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-041b8e3e", module.exports)
+  }
+}
+
+/***/ }),
+/* 72 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var eventBus = {};
+
+eventBus.install = function (Vue) {
+  Vue.prototype.$bus = new Vue();
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (eventBus);
 
 /***/ })
 /******/ ]);
