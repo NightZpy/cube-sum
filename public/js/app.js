@@ -43075,7 +43075,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      type: '',
+      //type: '',
       operation: '',
       isInvalid: false,
       querys: [],
@@ -43095,17 +43095,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       var _this2 = this;
 
       this.isInvalid = false;
-      if (this.type === 'query') if (!/^\d( ?\d){5}$/.test(this.operation)) this.isInvalid = true;else if (!/^\d( ?\d){3}$/.test(this.operation)) this.isInvalid = true;
+      //if (this.type == 'query')
+      var type = '';
+      if (/^\d+( ?\d+){5}$/.test(this.operation)) type = 'query';else if (/^\d+( ?\d+){3}$/.test(this.operation)) type = 'update';else this.isInvalid = true;
 
       if (!this.isInvalid) {
+        console.log(type);
         var data = { cube_id: 1, operation: this.operation };
-        axios.post(this.type, data).then(function (response) {
-          console.log(response.data);
+        axios.post(type, data).then(function (response) {
           var query = { operation: _this2.operation };
-          if (_this2.type === 'query') query[total] = response.data.total;
+
+          if (type == 'query') {
+            console.log('agregando total');
+            query['total'] = response.data.total;
+          }
+
+          console.log('query');
+          console.log(query);
           _this2.querys.push(query);
+          console.log(querys);
         }).catch(function (e) {
-          _this2.errors.push(e);
+          //this.errors.push(e)
         });
       }
     }
@@ -43169,50 +43179,6 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "panel panel-body" }, [
           _c("div", { staticClass: "input-group" }, [
-            _c("span", { staticClass: "input-group-addon" }, [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.type,
-                    expression: "type"
-                  }
-                ],
-                attrs: {
-                  type: "radio",
-                  name: "type",
-                  value: "update",
-                  selected: ""
-                },
-                domProps: { checked: _vm._q(_vm.type, "update") },
-                on: {
-                  change: function($event) {
-                    _vm.type = "update"
-                  }
-                }
-              }),
-              _vm._v(" UPDATE\n                "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.type,
-                    expression: "type"
-                  }
-                ],
-                attrs: { type: "radio", name: "type", value: "query" },
-                domProps: { checked: _vm._q(_vm.type, "query") },
-                on: {
-                  change: function($event) {
-                    _vm.type = "query"
-                  }
-                }
-              }),
-              _vm._v(" QUERY\n            ")
-            ]),
-            _vm._v(" "),
             _c("input", {
               directives: [
                 {
@@ -43255,11 +43221,11 @@ var render = function() {
             _c("div", { staticClass: "col-md-offset-1 col-md-10" }, [
               _c(
                 "ul",
-                _vm._l(_vm.query, function(querys) {
+                _vm._l(_vm.querys, function(q) {
                   return _c("li", [
-                    _c("em", [_vm._v(_vm._s(_vm.query.operation) + ": ")]),
+                    _c("em", [_vm._v(_vm._s(q.operation) + ": ")]),
                     _vm._v(" "),
-                    _c("strong", [_vm._v(_vm._s(_vm.query.total))])
+                    _c("strong", [_vm._v(_vm._s(q.total))])
                   ])
                 })
               )
