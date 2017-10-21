@@ -21,6 +21,7 @@ class Game extends Model
         list($fromX, $fromY, $fromZ, $toX, $toY, $toZ) = array_map(function($value) {
             return intval($value) - 1;
         }, explode(' ', $this->operation));
+        
         return $this->queryBruteForce($matrix, $fromX, $fromY, $fromZ, $toX, $toY, $toZ);
     }
 

@@ -6,11 +6,13 @@
             </div>
         </div>
         <div class="form-group">
+            <label for="nSize">N Dimention for the cube</label>
             <input v-bind:class="{ error: !isValidCube }"
                    @keyup.enter="makeCube"
                    v-model="nSize"
                    type="number"
-                   class="form-control" id="operation" name="operation"
+                   class="form-control" id="nSize" name="nSize"
+                   title="N Dimention for the cube"
                    placeholder="N Dimention for the cube">
         </div><!-- /input-group -->
     </div>

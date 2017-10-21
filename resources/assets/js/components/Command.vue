@@ -1,28 +1,30 @@
-<template>
+<template xmlns="http://www.w3.org/1999/html">
     <div v-if="isValidCube">
-        <div class="panel panel-default">
-            <div class="panel-heading text-center"><h1>Commands</h1></div>
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center"><h1>Commands</h1></div>
+            </div>
+            <div class="panel panel-body">
+                <div class="form-group">
+                    <input v-bind:class="{ error: isInvalid }" @keyup.enter="sendCommand" v-model="operation"
+                           type="text"
+                           class="form-control" id="operation" name="operation"
+                           placeholder="INSERT OPERATION HERE. Press [Enter] for send!">
+                </div><!-- /input-group -->
+            </div>
         </div>
-        <div class="panel panel-body">
-            <div class="input-group">
-                <!--<span class="input-group-addon">-->
-                    <!--<input type="radio" v-model="type" name="type" value="update" selected> UPDATE-->
-                    <!--<input type="radio" v-model="type" name="type" value="query"> QUERY-->
-                <!--</span>-->
-                <input v-bind:class="{ error: isInvalid }" @keyup.enter="sendCommand" v-model="operation" type="text"
-                       class="form-control" id="operation" name="operation"
-                       placeholder="INSERT OPERATION HERE. Press [Enter] for send!">
-            </div><!-- /input-group -->
-
-            <div class="row">
-                <div class="col-md-offset-1 col-md-10">
-                    <ul>
-                        <li v-for="q in querys">
-                            <em>{{ q.operation }}: </em>
-                            <strong>{{ q.total }}</strong>
-                        </li>
-                    </ul>
-                </div>
+        <div class="row" v-if="querys.length">
+            <div class="panel panel-default">
+                <div class="panel-heading text-center"><h2>Operation list</h2></div>
+            </div>
+            <div class="panel panel-body scroll">
+                <ul>
+                    <li v-for="q in querys">
+                        <h3>
+                            {{ q.type }} | {{ q.operation }} | <span v-if="q.total">Total: <em>{{ q.total }}</em></span>
+                        </h3>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -63,17 +65,12 @@
                 let data = { cube_id: 1, operation: this.operation };
                   axios.post(type, data)
                   .then(response => {
-                    let query = {operation: this.operation};
+                    let query = {operation: this.operation, 'type': type};
 
-                    if ( type == 'query') {
-                      console.log('agregando total');
+                    if ( type == 'query')
                       query['total'] = response.data.total;
-                    }
-
-                    console.log('query');
-                    console.log(query);
                     this.querys.push(query);
-                    console.log(querys);
+                    this.operation = '';
                   })
                   .catch(e => {
                     //this.errors.push(e)
@@ -87,11 +84,16 @@
 <style scoped>
     input[type="text"]
     {
-        font-size:24px;
+        font-size:14px;
         font-weight: bold;
     }
 
     .error {
         border: red solid 2px;
+    }
+
+    .scroll {
+        height: 250px;
+        overflow-y: auto;
     }
 </style>

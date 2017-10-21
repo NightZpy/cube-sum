@@ -43071,6 +43071,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -43103,17 +43105,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         console.log(type);
         var data = { cube_id: 1, operation: this.operation };
         axios.post(type, data).then(function (response) {
-          var query = { operation: _this2.operation };
+          var query = { operation: _this2.operation, 'type': type };
 
-          if (type == 'query') {
-            console.log('agregando total');
-            query['total'] = response.data.total;
-          }
-
-          console.log('query');
-          console.log(query);
+          if (type == 'query') query['total'] = response.data.total;
           _this2.querys.push(query);
-          console.log(querys);
+          _this2.operation = '';
         }).catch(function (e) {
           //this.errors.push(e)
         });
@@ -43160,7 +43156,7 @@ exports = module.exports = __webpack_require__(45)(undefined);
 
 
 // module
-exports.push([module.i, "\ninput[type=\"text\"][data-v-5bdac094]\n{\n    font-size:24px;\n    font-weight: bold;\n}\n.error[data-v-5bdac094] {\n    border: red solid 2px;\n}\n", ""]);
+exports.push([module.i, "\ninput[type=\"text\"][data-v-5bdac094]\n{\n    font-size:14px;\n    font-weight: bold;\n}\n.error[data-v-5bdac094] {\n    border: red solid 2px;\n}\n.scroll[data-v-5bdac094] {\n    height: 250px;\n    overflow-y: auto;\n}\n", ""]);
 
 // exports
 
@@ -43175,63 +43171,81 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _vm.isValidCube
     ? _c("div", [
-        _vm._m(0),
-        _vm._v(" "),
-        _c("div", { staticClass: "panel panel-body" }, [
-          _c("div", { staticClass: "input-group" }, [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.operation,
-                  expression: "operation"
-                }
-              ],
-              staticClass: "form-control",
-              class: { error: _vm.isInvalid },
-              attrs: {
-                type: "text",
-                id: "operation",
-                name: "operation",
-                placeholder: "INSERT OPERATION HERE. Press [Enter] for send!"
-              },
-              domProps: { value: _vm.operation },
-              on: {
-                keyup: function($event) {
-                  if (
-                    !("button" in $event) &&
-                    _vm._k($event.keyCode, "enter", 13, $event.key)
-                  ) {
-                    return null
-                  }
-                  _vm.sendCommand($event)
-                },
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.operation = $event.target.value
-                }
-              }
-            })
-          ]),
+        _c("div", { staticClass: "row" }, [
+          _vm._m(0),
           _vm._v(" "),
-          _c("div", { staticClass: "row" }, [
-            _c("div", { staticClass: "col-md-offset-1 col-md-10" }, [
-              _c(
-                "ul",
-                _vm._l(_vm.querys, function(q) {
-                  return _c("li", [
-                    _c("em", [_vm._v(_vm._s(q.operation) + ": ")]),
-                    _vm._v(" "),
-                    _c("strong", [_vm._v(_vm._s(q.total))])
-                  ])
-                })
-              )
+          _c("div", { staticClass: "panel panel-body" }, [
+            _c("div", { staticClass: "form-group" }, [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.operation,
+                    expression: "operation"
+                  }
+                ],
+                staticClass: "form-control",
+                class: { error: _vm.isInvalid },
+                attrs: {
+                  type: "text",
+                  id: "operation",
+                  name: "operation",
+                  placeholder: "INSERT OPERATION HERE. Press [Enter] for send!"
+                },
+                domProps: { value: _vm.operation },
+                on: {
+                  keyup: function($event) {
+                    if (
+                      !("button" in $event) &&
+                      _vm._k($event.keyCode, "enter", 13, $event.key)
+                    ) {
+                      return null
+                    }
+                    _vm.sendCommand($event)
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.operation = $event.target.value
+                  }
+                }
+              })
             ])
           ])
-        ])
+        ]),
+        _vm._v(" "),
+        _vm.querys.length
+          ? _c("div", { staticClass: "row" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c("div", { staticClass: "panel panel-body scroll" }, [
+                _c(
+                  "ul",
+                  _vm._l(_vm.querys, function(q) {
+                    return _c("li", [
+                      _c("h3", [
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(q.type) +
+                            " | " +
+                            _vm._s(q.operation) +
+                            " | "
+                        ),
+                        q.total
+                          ? _c("span", [
+                              _vm._v("Total: "),
+                              _c("em", [_vm._v(_vm._s(q.total))])
+                            ])
+                          : _vm._e()
+                      ])
+                    ])
+                  })
+                )
+              ])
+            ])
+          : _vm._e()
       ])
     : _vm._e()
 }
@@ -43243,6 +43257,16 @@ var staticRenderFns = [
     return _c("div", { staticClass: "panel panel-default" }, [
       _c("div", { staticClass: "panel-heading text-center" }, [
         _c("h1", [_vm._v("Commands")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "panel panel-default" }, [
+      _c("div", { staticClass: "panel-heading text-center" }, [
+        _c("h2", [_vm._v("Operation list")])
       ])
     ])
   }
@@ -43372,6 +43396,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'newcube',
@@ -43417,6 +43443,10 @@ var render = function() {
         _vm._m(0),
         _vm._v(" "),
         _c("div", { staticClass: "form-group" }, [
+          _c("label", { attrs: { for: "nSize" } }, [
+            _vm._v("N Dimention for the cube")
+          ]),
+          _vm._v(" "),
           _c("input", {
             directives: [
               {
@@ -43430,8 +43460,9 @@ var render = function() {
             class: { error: !_vm.isValidCube },
             attrs: {
               type: "number",
-              id: "operation",
-              name: "operation",
+              id: "nSize",
+              name: "nSize",
+              title: "N Dimention for the cube",
               placeholder: "N Dimention for the cube"
             },
             domProps: { value: _vm.nSize },
