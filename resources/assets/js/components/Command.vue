@@ -36,60 +36,71 @@
 </template>
 
 <script>
-    export default {
-        data () {
-          return {
-            //type: '',
-            operation: '',
-            isInvalid: false,
-            querys: [],
-            isValidCube: false
-          }
-        },
-        mounted() {
-          this.$bus.$on('cubeCreated', (info) => {
-            this.isValidCube = info;
+  export default {
+    data() {
+      return {
+        //type: '',
+        operation: '',
+        isInvalid: false,
+        querys: [],
+        isValidCube: false,
+      };
+    },
+    mounted() {
+      this.$bus.$on('cubeCreated', (info) => {
+        this.isValidCube = info;
 
-            if (!info)
-              this.querys = [];
-          })
-        },
-        methods: {
-          newCube () {
-            this.$bus.$emit('newCube', true);
-          },
-          sendCommand () {
+        if (!info)
+          this.querys = [];
+      });
+    },
+    methods: {
+      newCube() {
+        this.$bus.$emit('newCube', true);
+      },
+      sendCommand() {
 
-            this.isInvalid = false;
-            //if (this.type == 'query')
-            let type = '';
-            if ( /^\d+( ?\d+){5}$/.test(this.operation) )
-              type = 'query';
-            else if ( /^\d+( ?\d+){3}$/.test(this.operation) )
-              type = 'update';
-            else
-              this.isInvalid = true;
-
-
-            if ( !this.isInvalid ) {
-                console.log(type);
-                let data = { cube_id: 1, operation: this.operation };
-                  axios.post(type, data)
-                  .then(response => {
-                    let query = {operation: this.operation, 'type': type};
-
-                    if ( type == 'query')
-                      query['total'] = response.data.total;
-                    this.querys.push(query);
-                    this.operation = '';
-                  })
-                  .catch(e => {
-                    //this.errors.push(e)
-                  });
-            }
-          }
+        this.isInvalid = false;
+        //if (this.type == 'query')
+        let type = '';
+        if (/^\d+( ?\d+){5}$/.test(this.operation)) {
+          type = 'query';
+        } else if (/^\d+( ?\d+){3}$/.test(this.operation)) {
+          type = 'update';
+        } else {
+          this.isInvalid = true;
+          this.$bus.$emit('showNotification', {
+            message: `Operation format is not valid!`,
+            title: 'Invalid operation!',
+            type: 'warning'
+          });
         }
-    }
+
+        if (!this.isInvalid) {
+          let data = {cube_id: 1, operation: this.operation};
+          axios.post(type, data).then(response => {
+            let query = {operation: this.operation, 'type': type};
+            if (type == 'query')
+              query['total'] = response.data.total;
+            this.querys.push(query);
+            this.operation = '';
+
+            this.$bus.$emit('showNotification', {
+              message: `${type.toUpperCase()} registered successfully!`,
+              title: 'Operation sent!',
+              type: 'success'
+            });
+          }).catch(e => {
+            this.$bus.$emit('showNotification', {
+              message: `An error sending the operation has occurred!`,
+              title: 'Operation fail!',
+              type: 'danger'
+            });
+          });
+        }
+      },
+    },
+  };
 </script>
 
 <style scoped>

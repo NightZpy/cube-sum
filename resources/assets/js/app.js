@@ -20,6 +20,7 @@ Vue.use(EventBus);
 
 Vue.component('command', require('./components/Command.vue'));
 Vue.component('newcube', require('./components/NewCube.vue'));
+Vue.component('flash', require('./components/Flash.vue'));
 
 const app = new Vue({
     el: '#app'

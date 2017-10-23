@@ -42,12 +42,21 @@
             if (response.data.success) {
               this.createValidCube = this.isValidCube = true;
               this.$bus.$emit('cubeCreated', true);
+              this.$bus.$emit('showNotification', {
+                    message: `Cube has been created with N: ${this.nSize}!`,
+                    title: 'Cube created!',
+                    type: 'success'
+              });
             } else {
               this.isValidCube = false;
             }
           }).catch( e => {
             this.isValidCube = false;
-            this.errors.push(e);
+            this.$bus.$emit('showNotification', {
+              message: `An error sending the N dimention has occurred!`,
+              title: 'Operation fail!',
+              type: 'danger'
+            });
           });
         }
       }

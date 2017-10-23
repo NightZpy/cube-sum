@@ -58,6 +58,8 @@
     </nav>
 
     @yield('content')
+
+    <flash message="Temporal message"></flash>
 </div>
 
 <!-- Scripts -->
